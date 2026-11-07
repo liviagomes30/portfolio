@@ -1,0 +1,87 @@
+/* ============================================================
+   Processo
+   Quatro círculos com ícones: Entender, Projetar, Desenvolver, Entregar.
+   ============================================================ */
+
+/* ---------- Layout ---------- */
+.process {
+  background: linear-gradient(180deg, var(--blue) 0%, var(--navy) 100%);
+  color: #fff;
+  padding: clamp(4rem, 8vw, 7rem) 0;
+}
+
+.process__container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.process__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(1rem, 3vw, 2rem);
+  margin-top: 3rem;
+}
+
+.process-step {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.process-step__circle {
+  width: clamp(100px, 16vw, 150px);
+  height: clamp(100px, 16vw, 150px);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  transition: background .3s, transform .3s;
+}
+
+.process-step__circle:hover {
+  background: rgba(255, 255, 255, .18);
+  transform: scale(1.08);
+}
+
+.process-step__circle svg {
+  width: 40%;
+  height: 40%;
+  stroke: rgba(255, 255, 255, .8);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.process-step__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+.process-step__desc {
+  font-size: .82rem;
+  color: rgba(255, 255, 255, .55);
+  max-width: 18ch;
+  line-height: 1.4;
+}
+
+@media (max-width: 680px) {
+  .process__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (hover: none) {
+  .process-step__circle:hover {
+    transform: none;
+  }
+}
+
+.process :focus-visible {
+  outline-color: var(--cream);
+}

@@ -1,0 +1,99 @@
+/* ============================================================
+   Formação e certificações
+   Formação acadêmica e cursos.
+   ============================================================ */
+
+/* ---------- Layout ---------- */
+.education {
+  background: var(--navy-deep);
+  color: #fff;
+  padding: clamp(4rem, 8vw, 7rem) 0;
+}
+
+.education__container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.education__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  margin-top: 2rem;
+}
+
+.edu-block__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, .5);
+}
+
+.edu-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.edu-item:last-child {
+  border-bottom: none;
+}
+
+.edu-item__degree {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.edu-item__school {
+  font-size: .88rem;
+  color: rgba(255, 255, 255, .55);
+  margin-top: 2px;
+}
+
+.edu-item__period {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  color: rgba(255, 255, 255, .35);
+  margin-top: 4px;
+}
+
+.cert-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+}
+
+.cert-item:last-child {
+  border-bottom: none;
+}
+
+.cert-dot {
+  width: 8px;
+  height: 8px;
+  min-width: 8px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+.cert-item span {
+  font-size: .9rem;
+  color: rgba(255, 255, 255, .7);
+}
+
+@media (max-width: 680px) {
+  .education__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.education__grid > * {
+  min-width: 0;
+}
+
+.education :focus-visible {
+  outline-color: var(--cream);
+}

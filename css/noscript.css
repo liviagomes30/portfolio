@@ -1,0 +1,8 @@
+/* Sem JavaScript: mantém tudo visível (as animações de entrada dependem de JS) */
+.reveal,
+.hero__massive,
+.hero__left,
+.hero__editor {
+  opacity: 1 !important;
+  transform: none !important;
+}

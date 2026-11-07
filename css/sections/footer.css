@@ -1,0 +1,33 @@
+/* ============================================================
+   Rodapé
+   Barra final.
+   ============================================================ */
+
+/* ---------- Layout ---------- */
+.footer {
+  background: var(--dark-bg);
+  color: rgba(255, 255, 241, .6);
+  padding: 1.5rem 0;
+  font-size: .78rem;
+}
+
+.footer__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .footer__inner {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+  }
+}
+
+.footer :focus-visible {
+  outline-color: var(--cream);
+}

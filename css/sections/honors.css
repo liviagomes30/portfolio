@@ -1,0 +1,161 @@
+/* ============================================================
+   Honra ao mérito
+   Cards dos certificados (FIPP/Unoeste) com a colocação em destaque.
+   ============================================================ */
+
+/* ---------- Layout ---------- */
+.honors {
+  background: linear-gradient(180deg, var(--blue) 0%, var(--navy) 100%);
+  color: #fff;
+  padding: clamp(4rem, 8vw, 7rem) 0;
+}
+
+.honors__container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.honors__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.honors__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: .95;
+  letter-spacing: -.04em;
+}
+
+.honors__sub {
+  font-size: .95rem;
+  color: rgba(255, 255, 255, .7);
+  max-width: 46ch;
+  line-height: 1.7;
+  margin-top: 1.25rem;
+}
+
+.honors__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.honor-card {
+  background: var(--cream);
+  color: var(--text);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .14);
+  display: flex;
+  flex-direction: column;
+  transition: transform .3s cubic-bezier(.16, 1, .3, 1);
+}
+
+.honor-card:hover {
+  transform: translateY(-4px);
+}
+
+.honor-card .window-mock__bar {
+  background: var(--cream-dark);
+}
+
+.honor-card__date {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  color: var(--text-muted);
+}
+
+.honor-card__body {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px 20px 14px;
+}
+
+.honor-card__rank {
+  width: 76px;
+  height: 76px;
+  min-width: 76px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.7rem;
+  letter-spacing: -.03em;
+}
+
+.honor-card__rank--1 {
+  background: var(--blue);
+  color: #fff;
+}
+
+.honor-card__rank--2 {
+  background: var(--gray-card);
+  color: var(--text);
+}
+
+.honor-card__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+}
+
+.honor-card__meta {
+  font-size: .82rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+@media (max-width: 960px) {
+  .honors__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .honors__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.honors__summary {
+  min-width: 250px;
+}
+
+@media (max-width: 960px) {
+  .honor-card__rank {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .honors__header .float-card {
+    width: 100%;
+  }
+}
+
+@media (hover: none) {
+  .honor-card:hover {
+    transform: none;
+  }
+}
+
+.honors :focus-visible {
+  outline-color: var(--cream);
+}

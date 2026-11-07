@@ -1,0 +1,117 @@
+/* ============================================================
+   Trajetória e números
+   Círculos grandes com métricas e card "Atuação".
+   ============================================================ */
+
+/* ---------- Layout ---------- */
+.stats {
+  background: var(--navy);
+  color: #fff;
+  padding: clamp(4rem, 8vw, 7rem) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.stats__container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.stats__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.stats__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: .95;
+  letter-spacing: -.04em;
+}
+
+.stats__sub {
+  font-size: .9rem;
+  color: rgba(255, 255, 255, .55);
+  max-width: 36ch;
+  line-height: 1.6;
+}
+
+.stats__row {
+  display: flex;
+  gap: clamp(1rem, 3vw, 2rem);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-circle {
+  width: clamp(160px, 22vw, 220px);
+  height: clamp(160px, 22vw, 220px);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: transform .3s, background .3s;
+}
+
+.stat-circle:hover {
+  transform: scale(1.06);
+  background: rgba(255, 255, 255, .12);
+}
+
+.stat-circle__value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  letter-spacing: -.03em;
+  line-height: 1;
+}
+
+.stat-circle__label {
+  font-size: .78rem;
+  color: rgba(255, 255, 255, .5);
+  margin-top: 6px;
+  max-width: 14ch;
+}
+
+.stats__float {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .stats__float {
+    justify-content: flex-start;
+  }
+}
+
+.stats__card {
+  max-width: 280px;
+}
+
+@media (max-width: 600px) {
+  .stat-circle {
+    width: clamp(128px, 40vw, 180px);
+    height: clamp(128px, 40vw, 180px);
+  }
+}
+
+@media (hover: none) {
+  .stat-circle:hover {
+    transform: none;
+  }
+}
+
+.stats :focus-visible {
+  outline-color: var(--cream);
+}
