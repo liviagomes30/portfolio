@@ -16,7 +16,9 @@
         }
       });
     },
-    { threshold: 0.1, rootMargin: '0px 0px -30px 0px' }
+    // threshold 0: elementos muito altos (ex.: grade de projetos no celular) nunca
+    // chegariam a 10% visíveis em telas baixas, como celular na horizontal.
+    { threshold: 0, rootMargin: '0px 0px -40px 0px' }
   );
 
   items.forEach((el) => observer.observe(el));

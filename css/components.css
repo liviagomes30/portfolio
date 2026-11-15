@@ -57,8 +57,13 @@
   transition: color .2s;
 }
 
-.nav__link:hover {
+.nav__link:hover,
+.nav__link[aria-current="true"] {
   color: var(--text);
+}
+
+.nav__link[aria-current="true"] {
+  color: var(--blue);
 }
 
 .nav__toggle {
@@ -276,7 +281,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: .65rem;
+  font-size: 0.75rem;
   flex-shrink: 0;
 }
 
@@ -389,4 +394,46 @@
 .section-subtitle strong {
   color: var(--text);
   font-weight: 600;
+}
+
+/* ---------- "Ver mais": conteúdo recolhido (details) ---------- */
+.more {
+  margin-top: 16px;
+}
+
+.more__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1.5px solid currentColor;
+  border-radius: var(--radius-pill);
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  opacity: .85;
+  transition: opacity .2s;
+}
+
+.more__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.more__toggle::after {
+  content: "+";
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.more[open] > .more__toggle::after {
+  content: "–";
+}
+
+.more__toggle:hover {
+  opacity: 1;
+}
+
+.more__content {
+  margin-top: 16px;
 }

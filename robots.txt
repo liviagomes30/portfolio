@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://livdev.com.br/sitemap.xml

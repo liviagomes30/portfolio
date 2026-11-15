@@ -50,7 +50,7 @@
 
 .skill-card__tag {
   font-family: var(--font-mono);
-  font-size: .72rem;
+  font-size: 0.75rem;
   background: rgba(255, 255, 255, .6);
   padding: 4px 11px;
   border-radius: var(--radius-pill);

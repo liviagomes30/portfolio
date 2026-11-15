@@ -13,6 +13,7 @@ portfolio/
 │   ├── tokens.css          # cores, fontes e raios (identidade visual)
 │   ├── base.css            # reset, acessibilidade e animação de entrada
 │   ├── components.css      # nav, abas, cards escuros, janela, botões, títulos
+│   ├── mascot.css          # mascote Byte
 │   ├── noscript.css        # fallback para quem desativa o JavaScript
 │   └── sections/           # um arquivo por seção
 │       ├── hero.css
@@ -28,6 +29,8 @@ portfolio/
 │       └── footer.css
 ├── js/
 │   ├── nav.js              # menu mobile
+│   ├── mascot.js           # mascote Byte (cria o DOM, segue a rolagem e o cursor)
+│   ├── nav-active.js       # destaca no menu a seção visível
 │   └── reveal.js           # animação de entrada ao rolar
 └── img/
     ├── livia.jpg

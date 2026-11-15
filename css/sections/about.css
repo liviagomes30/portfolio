@@ -37,12 +37,19 @@
   object-position: center 30%;
 }
 
+/* Sem faixa quadriculada: o selo fica sobre a própria foto */
+.about__window .window-mock__body {
+  position: relative;
+}
+
 .about__strip {
-  height: 64px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: repeating-linear-gradient(45deg, transparent 0 17px, rgba(49, 50, 52, .14) 17px 18px), repeating-linear-gradient(-45deg, transparent 0 17px, rgba(49, 50, 52, .14) 17px 18px), var(--cream);
+  pointer-events: none;
 }
 
 .about__badge {
