@@ -47,7 +47,7 @@
     ['.project-card__link', 'Código aberto no GitHub!', 'wow'],
     ['.contact__link', 'Manda um oi!', 'love'],
     ['.about__photo', 'Essa é a Lívia!', 'wink'],
-    ['.stat-circle', 'Cada número tem uma história.', 'wow'],
+    ['.stat', 'Cada número tem uma história.', 'wow'],
     ['.honor-card', 'Mérito de verdade!', 'love'],
     ['.skill-card', 'Ela manja disso!', 'wink'],
   ];

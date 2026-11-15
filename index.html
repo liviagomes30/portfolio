@@ -135,6 +135,19 @@
 
             <!-- CODE EDITOR -->
             <div class="hero__editor">
+              <!-- AVATAR 3D: só carrega em telas grandes. Coloque o arquivo em img/avatar.webp (fundo transparente).
+                   Se o arquivo não existir, o bloco se remove sozinho. -->
+              <picture class="hero__avatar">
+                <source media="(min-width: 1200px) and (min-height: 700px)" srcset="img/avatar.webp" />
+                <img
+                  src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                  alt="Avatar 3D de Lívia Gomes"
+                  width="985"
+                  height="1250"
+                  decoding="async"
+                  onerror="this.closest('picture').remove()"
+                />
+              </picture>
               <div class="window-mock">
                 <div class="window-mock__bar">
                   <div class="window-mock__dot window-mock__dot--red"></div>
@@ -361,51 +374,26 @@
             </p>
           </div>
           <div class="stats__row reveal">
-            <div class="stat-circle">
-              <div class="stat-circle__value">+2</div>
-              <div class="stat-circle__label">anos em desenvolvimento</div>
+            <div class="stat">
+              <div class="stat__value"><span data-count="2" data-prefix="+">+2</span></div>
+              <div class="stat__label">anos em desenvolvimento</div>
             </div>
-            <div class="stat-circle">
-              <div class="stat-circle__value">4</div>
-              <div class="stat-circle__label">empresas na trajetória</div>
+            <div class="stat">
+              <div class="stat__value"><span data-count="4">4</span></div>
+              <div class="stat__label">empresas na trajetória</div>
             </div>
-            <div class="stat-circle">
-              <div class="stat-circle__value">20+</div>
-              <div class="stat-circle__label">
-                repositórios no projeto atual
-              </div>
+            <div class="stat">
+              <div class="stat__value"><span data-count="20" data-suffix="+">20+</span></div>
+              <div class="stat__label">repositórios no projeto atual</div>
             </div>
           </div>
-          <div class="stats__float reveal">
-            <div class="float-card stats__card">
-              <div class="float-card__header">
-                <span class="float-card__title">Atuação</span>
-                <div class="float-card__check">
-                  <svg
-                    width="10"
-                    height="10"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#fff"
-                    stroke-width="3"
-                  >
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                </div>
-              </div>
-              <div class="float-card__item">
-                <div class="float-card__item-icon">+</div>
-                <span>Microsserviços em produção</span>
-              </div>
-              <div class="float-card__item">
-                <div class="float-card__item-icon">+</div>
-                <span>Aplicações web de ponta a ponta</span>
-              </div>
-              <div class="float-card__item">
-                <div class="float-card__item-icon">+</div>
-                <span>Arquitetura backend + frontend</span>
-              </div>
-            </div>
+          <div class="stats__focus reveal">
+            <p class="stats__focus-title">Atuação</p>
+            <ul class="stats__chips" role="list">
+              <li>Microsserviços em produção</li>
+              <li>Aplicações web de ponta a ponta</li>
+              <li>Arquitetura backend + frontend</li>
+            </ul>
           </div>
         </div>
       </section>
@@ -1276,6 +1264,8 @@
     <script src="js/nav.js" defer></script>
     <script src="js/reveal.js" defer></script>
     <script src="js/nav-active.js" defer></script>
+    <script src="js/stats.js" defer></script>
+    <script src="js/avatar.js" defer></script>
     <script src="js/mascot.js" defer></script>
   </body>
 </html>

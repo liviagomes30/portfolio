@@ -1,6 +1,6 @@
 /* ============================================================
    Trajetória e números
-   Círculos grandes com métricas e card "Atuação".
+   Título + texto de apoio, três métricas em destaque e chips de atuação.
    ============================================================ */
 
 /* ---------- Layout ---------- */
@@ -18,13 +18,13 @@
   padding: 0 clamp(1.25rem, 4vw, 2.5rem);
 }
 
+/* Título à esquerda, texto de apoio alinhado à base à direita */
 .stats__header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 2rem;
-  margin-bottom: 3rem;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 38ch);
+  align-items: end;
+  gap: 1.5rem 3rem;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
 }
 
 .stats__title {
@@ -36,79 +36,120 @@
 }
 
 .stats__sub {
-  font-size: .9rem;
-  color: rgba(255, 255, 255, .55);
-  max-width: 36ch;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, .82);
   line-height: 1.6;
 }
 
+/* ---------- Métricas ---------- */
 .stats__row {
-  display: flex;
-  gap: clamp(1rem, 3vw, 2rem);
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 3vw, 3rem);
 }
 
-.stat-circle {
-  width: clamp(160px, 22vw, 220px);
-  height: clamp(160px, 22vw, 220px);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .08);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  transition: transform .3s, background .3s;
+.stat {
+  padding-top: 1.25rem;
+  border-top: 2px solid rgba(255, 255, 255, .3);
+  transition: border-color .3s;
 }
 
-.stat-circle:hover {
-  transform: scale(1.06);
-  background: rgba(255, 255, 255, .12);
+.stat:hover {
+  border-color: var(--cream);
 }
 
-.stat-circle__value {
+.stat__value {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  letter-spacing: -.03em;
+  font-size: clamp(3.25rem, 8vw, 6.5rem);
+  letter-spacing: -.05em;
   line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
-.stat-circle__label {
-  font-size: .78rem;
-  color: rgba(255, 255, 255, .5);
-  margin-top: 6px;
-  max-width: 14ch;
+.stat__label {
+  margin-top: .75rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, .82);
+  max-width: 20ch;
 }
 
-.stats__float {
-  margin-top: 2rem;
+/* ---------- Atuação (chips) ---------- */
+.stats__focus {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, .18);
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .75rem 1.5rem;
 }
 
+.stats__focus-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .85rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .82);
+}
+
+.stats__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.stats__chips li {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem 1rem;
+  border-radius: var(--radius-pill);
+  background: var(--dark);
+  color: var(--text-light);
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+/* Ponto azul-claro antes de cada chip */
+.stats__chips li::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--blue-light);
+}
+
+/* ---------- Responsivo ---------- */
 @media (max-width: 768px) {
-  .stats__float {
-    justify-content: flex-start;
+  .stats__header {
+    grid-template-columns: 1fr;
   }
 }
 
-.stats__card {
-  max-width: 280px;
-}
-
-@media (max-width: 600px) {
-  .stat-circle {
-    width: clamp(128px, 40vw, 180px);
-    height: clamp(128px, 40vw, 180px);
+/* Celular: cada métrica vira uma linha (número à esquerda, texto à direita) */
+@media (max-width: 560px) {
+  .stats__row {
+    grid-template-columns: 1fr;
+    gap: 0;
   }
-}
-
-@media (hover: none) {
-  .stat-circle:hover {
-    transform: none;
+  .stat {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, auto) 1fr;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+  .stat:last-child {
+    border-bottom: 2px solid rgba(255, 255, 255, .3);
+  }
+  .stat__value {
+    font-size: clamp(2.75rem, 16vw, 4rem);
+  }
+  .stat__label {
+    margin-top: 0;
   }
 }
 
