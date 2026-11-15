@@ -72,7 +72,7 @@
 
 .exp-card__tag {
   font-family: var(--font-mono);
-  font-size: .68rem;
+  font-size: 0.75rem;
   background: var(--cream-dark);
   padding: 3px 10px;
   border-radius: var(--radius-pill);
