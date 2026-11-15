@@ -30,9 +30,12 @@ portfolio/
 ├── js/
 │   ├── nav.js              # menu mobile
 │   ├── mascot.js           # mascote Byte (cria o DOM, segue a rolagem e o cursor)
+│   ├── avatar.js           # inclinação do avatar 3D da hero (telas grandes)
+│   ├── stats.js            # contagem animada dos números
 │   ├── nav-active.js       # destaca no menu a seção visível
 │   └── reveal.js           # animação de entrada ao rolar
 └── img/
+    ├── avatar.webp         # avatar 3D da hero (fundo transparente)
     ├── livia.jpg
     └── favicon.svg
 ```
