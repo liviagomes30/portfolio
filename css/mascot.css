@@ -12,8 +12,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  transform: translateY(var(--mascot-y, 120px));
-  transition: transform .7s cubic-bezier(.16, 1, .3, 1), opacity .3s;
+  transform: translateY(calc(var(--mascot-y, 120px) + var(--drag-y, 0px)));
+  translate: var(--walk-x, 0) 0; /* passeio: independe da rolagem (transform) */
+  transition: transform .7s cubic-bezier(.16, 1, .3, 1), translate var(--walk-dur, 0s) linear, opacity .3s;
   pointer-events: none; /* só os elementos internos recebem clique */
   will-change: transform;
 }
@@ -24,7 +25,11 @@
 
 /* ---------- Balão de fala ---------- */
 .mascot__bubble {
-  position: relative;
+  /* Fora do fluxo: o balão não muda a posição do Byte quando troca de lado */
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 10px);
+  width: max-content;
   max-width: 190px;
   padding: 8px 12px;
   background: var(--cream);
@@ -36,7 +41,7 @@
   line-height: 1.35;
   box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
   opacity: 0;
-  transform: translateX(8px) scale(.96);
+  transform: translate(8px, -50%) scale(.96);
   transform-origin: right center;
   transition: opacity .25s, transform .25s;
 }
@@ -54,9 +59,25 @@
   transform: translateY(-50%) rotate(45deg);
 }
 
-.mascot.is-talking .mascot__bubble {
+.mascot.bubble-right .mascot__bubble {
+  right: auto;
+  left: calc(100% + 10px);
+  transform: translate(-8px, -50%) scale(.96);
+  transform-origin: left center;
+}
+
+.mascot.bubble-right .mascot__bubble::after {
+  right: auto;
+  left: -7px;
+  border: 0;
+  border-bottom: 1.5px solid var(--dark);
+  border-left: 1.5px solid var(--dark);
+}
+
+.mascot.is-talking .mascot__bubble,
+.mascot.is-talking.bubble-right .mascot__bubble {
   opacity: 1;
-  transform: none;
+  transform: translateY(-50%);
 }
 
 /* ---------- Figura ---------- */
@@ -315,6 +336,109 @@
   }
 }
 
+/* ---------- Caminhada ---------- */
+.mascot__figure {
+  rotate: var(--lean, 0deg);
+  transition: transform .25s cubic-bezier(.16, 1, .3, 1), rotate .3s;
+}
+
+.mascot__foot {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.mascot.is-walking .mascot__svg {
+  animation: mascotWalkBob .36s ease-in-out infinite;
+}
+
+.mascot.is-walking .mascot__foot--l {
+  animation: mascotStep .36s ease-in-out infinite;
+}
+
+.mascot.is-walking .mascot__foot--r {
+  animation: mascotStep .36s ease-in-out infinite .18s;
+}
+
+@keyframes mascotWalkBob {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes mascotStep {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* ---------- Arrastar ---------- */
+.mascot__figure {
+  touch-action: none; /* no celular, arrastar o Byte não rola a página */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.mascot.is-dragging,
+.mascot.is-dragging .mascot__figure {
+  cursor: grabbing;
+}
+
+/* Segue o ponteiro sem atraso */
+.mascot.is-dragging {
+  transition: none;
+}
+
+.mascot.is-dragging .mascot__figure {
+  scale: 1.12;
+  filter: drop-shadow(0 14px 14px rgba(0, 0, 0, .25));
+}
+
+/* Pendurado: balança preso pela "antena" e as perninhas chutam o ar */
+.mascot.is-dragging .mascot__svg {
+  transform-origin: 50% 8%;
+  animation: mascotDangle .5s ease-in-out infinite;
+}
+
+.mascot.is-dragging .mascot__foot--l {
+  animation: mascotKick .28s ease-in-out infinite;
+}
+
+.mascot.is-dragging .mascot__foot--r {
+  animation: mascotKick .28s ease-in-out infinite .14s;
+}
+
+@keyframes mascotDangle {
+  0%, 100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes mascotKick {
+  50% {
+    transform: translateY(-6px) rotate(12deg);
+  }
+}
+
+/* Aterrissagem: achata e volta */
+.mascot__figure.do-land {
+  animation: mascotLand .5s cubic-bezier(.3, 1.4, .5, 1);
+}
+
+@keyframes mascotLand {
+  0% {
+    transform: scale(.9, 1.15);
+  }
+  40% {
+    transform: scale(1.18, .8) translateY(4px);
+  }
+  70% {
+    transform: scale(.96, 1.06);
+  }
+}
+
 /* ---------- Animações pontuais (disparadas pelo JS) ---------- */
 .mascot__figure.do-jump {
   animation: mascotJump .5s cubic-bezier(.3, 1.6, .5, 1);
@@ -386,24 +510,25 @@
 @media (max-width: 600px) {
   .mascot {
     right: -16px;
-    transform: translate(var(--mascot-x, 0), var(--mascot-y, 120px));
+    transform: translate(var(--mascot-x, 0), calc(var(--mascot-y, 120px) + var(--drag-y, 0px)));
     opacity: .92;
   }
   /* Ao comentar uma seção (ou ao toque), "sai" um pouco da borda. */
   .mascot.is-talking {
     --mascot-x: -18px;
   }
+  .mascot.is-away {
+    --mascot-x: 0px;
+  }
   .mascot__figure {
     width: 46px;
     height: 52px;
   }
-  /* O balão só aparece quando o visitante toca no Byte */
+  /* Balão menor, mas ele fala normalmente no celular */
   .mascot__bubble {
-    display: none;
     max-width: 150px;
-  }
-  .mascot.is-asked .mascot__bubble {
-    display: block;
+    padding: 7px 10px;
+    font-size: .78rem;
   }
   /* Área de toque maior, mantendo o botão visualmente pequeno */
   .mascot__close::before {
@@ -420,7 +545,7 @@
     height: 45px;
   }
   .mascot__bubble {
-    display: none;
+    max-width: 140px;
   }
 }
 

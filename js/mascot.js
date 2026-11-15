@@ -104,8 +104,8 @@
       <path class="mascot__mouth mascot__mouth--open" d="M30 46h12q-1 7-6 7t-6-7z"/>
       <ellipse class="mascot__mouth mascot__mouth--o" cx="36" cy="49" rx="3" ry="3.6"/>
       <!-- pezinhos -->
-      <rect class="mascot__foot" x="19" y="66" width="12" height="8" rx="4"/>
-      <rect class="mascot__foot" x="41" y="66" width="12" height="8" rx="4"/>
+      <rect class="mascot__foot mascot__foot--l" x="19" y="66" width="12" height="8" rx="4"/>
+      <rect class="mascot__foot mascot__foot--r" x="41" y="66" width="12" height="8" rx="4"/>
     </svg>`;
 
   const root = document.createElement('aside');
@@ -177,16 +177,26 @@
 
   let talkTimer;
   let current = 'hero';
+  let walkX = 0; // destino atual do passeio (px para a esquerda do cantinho)
 
   let quietUntil = 0; // reações especiais não são atropeladas pelo comentário da seção
+
+  // Posição (px da borda esquerda) onde o Byte vai estar quando terminar de andar.
+  function finalLeft() {
+    const r = figure.getBoundingClientRect();
+    const tx = parseFloat(getComputedStyle(root).translate) || 0;
+    return r.left + (-walkX - tx);
+  }
 
   function say(text, ms, asked, special) {
     if (special) quietUntil = Date.now() + (ms || 3200);
     bubble.textContent = text;
-    root.classList.toggle('is-asked', !!asked); // no celular, o balão só aparece ao toque
+    // Perto da borda esquerda (inclusive no ponto de chegada de um passeio) o balão
+    // passa para o lado direito, para não sair da tela.
+    root.classList.toggle('bubble-right', finalLeft() < bubble.offsetWidth + 24);
     root.classList.add('is-talking');
     clearTimeout(talkTimer);
-    talkTimer = setTimeout(() => root.classList.remove('is-talking', 'is-asked'), ms || 3200);
+    talkTimer = setTimeout(() => root.classList.remove('is-talking'), ms || 3200);
   }
 
   const bag = [];
@@ -278,6 +288,7 @@
   let useContext = true;
 
   figure.addEventListener('click', () => {
+    if (suppressClick) return; // o clique que sobra ao soltar depois de arrastar
     activity();
     clicks++;
     clearTimeout(clickReset);
@@ -339,6 +350,251 @@
     setMood('love', 2500);
     say('Obrigado por escrever!', 3200);
   });
+
+  /* ---------- Passeios pela tela ---------- */
+  // De tempos em tempos o Byte sai do cantinho, caminha até um ponto da tela,
+  // comenta alguma coisa e volta. Não passeia dormindo, com o menu aberto ou com movimento reduzido.
+
+  const SPEED = 140; // px por segundo
+  const WALK_LINES = ['Vou dar uma voltinha!', 'Deixa eu esticar as pernas.', 'Já volto!'];
+  const ARRIVE_LINES = [
+    'Daqui a vista é boa.',
+    'Estou de olho em você.',
+    'Posso ficar aqui um pouquinho?',
+    'Passeando e lendo o portfólio.',
+  ];
+  const BACK_LINES = ['Voltando pro meu cantinho!', 'Já deu minha voltinha.'];
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+  let away = false; // true entre sair do cantinho e voltar
+  let walkEnd;
+  let strollTimer;
+  let walkGen = 0; // muda quando algo interrompe o passeio (ex.: o visitante pega o Byte)
+  let dragging = false;
+
+  function setAway(v) {
+    away = v;
+    root.classList.toggle('is-away', v);
+  }
+
+  function walkTo(dist, onArrive) {
+    const delta = dist - walkX;
+    const ms = (Math.abs(delta) / SPEED) * 1000;
+    const goingLeft = delta > 0; // o cantinho fica à direita
+    root.style.setProperty('--walk-dur', `${ms / 1000}s`);
+    root.style.setProperty('--lean', `${goingLeft ? -6 : 6}deg`);
+    root.classList.add('is-walking');
+    root.classList.remove('is-talking');
+    pupils.forEach((p) => (p.style.transform = `translate(${goingLeft ? -2.4 : 2.4}px, 0)`));
+    root.style.setProperty('--walk-x', `${-dist}px`);
+    walkX = dist;
+    clearTimeout(walkEnd);
+    walkEnd = setTimeout(() => {
+      root.classList.remove('is-walking');
+      root.style.setProperty('--lean', '0deg');
+      pupils.forEach((p) => (p.style.transform = ''));
+      if (onArrive) onArrive();
+    }, ms + 80);
+  }
+
+  function canStroll() {
+    return (
+      !away &&
+      !dragging &&
+      !sleeping &&
+      !root.hidden &&
+      !document.hidden &&
+      !reduceMotion.matches &&
+      !document.querySelector('.nav__links.open') &&
+      Date.now() >= quietUntil
+    );
+  }
+
+  function stroll() {
+    scheduleStroll();
+    if (!canStroll()) return;
+    const gen = ++walkGen;
+    setAway(true);
+    const vw = window.innerWidth;
+    const dist = Math.min(vw * (0.3 + Math.random() * 0.4), 760);
+    say(pick(WALK_LINES), 2200, false, true);
+    setTimeout(() => {
+      if (gen !== walkGen) return;
+      if (sleeping) return returnHome(gen);
+      walkTo(dist, () => {
+        if (gen !== walkGen) return;
+        setMood('wow', 1200);
+        play('do-jump');
+        say(pick(ARRIVE_LINES), 3200);
+        setTimeout(() => returnHome(gen), 5000 + Math.random() * 3000);
+      });
+    }, 1400);
+  }
+
+  function returnHome(gen) {
+    if (gen !== walkGen) return;
+    say(pick(BACK_LINES), 2200);
+    setTimeout(() => {
+      if (gen !== walkGen) return;
+      root.style.setProperty('--drag-y', '0px');
+      walkTo(0, () => {
+        if (gen !== walkGen) return;
+        setAway(false);
+        setMood('wink', 1200);
+      });
+    }, 1200);
+  }
+
+  function scheduleStroll(first) {
+    clearTimeout(strollTimer);
+    strollTimer = setTimeout(stroll, first ? 9000 + Math.random() * 4000 : 22000 + Math.random() * 14000);
+  }
+  scheduleStroll(true);
+
+  /* ---------- Arrastar o Byte ---------- */
+  // O visitante pode pegar o Byte (mouse ou toque) e levar para qualquer lugar da tela.
+  // Ele reage: se assusta, balança as perninhas, e ao soltar cai (ou é lançado, se soltar rápido).
+  // Depois de alguns segundos ele volta sozinho para o cantinho.
+
+  const PICK_LINES = ['Ei! Pra onde vamos?', 'Uau, estou voando!', 'Cuidado comigo!', 'Me segura direito!'];
+  const DROP_LINES = ['Aqui está bom!', 'Boa aterrissagem!', 'Gostei daqui.', 'Obrigado pela carona!'];
+  const THROW_LINES = ['Uuuui, que lançamento!', 'Quase passei mal!', 'Ufa! Aterrissei.'];
+  const DRAG_PAD = 4;
+
+  let dragStart = null; // { x, y, id } enquanto o botão/dedo está pressionado
+  let grab = { x: 0, y: 0 }; // onde, dentro do Byte, o visitante pegou
+  let dockLeft = 0; // borda esquerda do Byte no cantinho
+  let dragY = 0;
+  let suppressClick = false;
+  let homeTimer;
+  let drags = 0;
+  let dragsReset;
+  const trail = []; // [tempo, x, y] dos últimos instantes, para calcular a velocidade ao soltar
+
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+  // Posiciona o Byte com a borda esquerda/topo em (left, top), limitado à tela.
+  function placeAt(left, top) {
+    const vw = document.documentElement.clientWidth;
+    const vh = window.innerHeight;
+    const l = clamp(left, DRAG_PAD, vw - figure.offsetWidth - DRAG_PAD);
+    const t = clamp(top, 72, vh - figure.offsetHeight - DRAG_PAD);
+    walkX = dockLeft - l;
+    root.style.setProperty('--walk-x', `${-walkX}px`);
+    dragY = t - (parseFloat(root.style.getPropertyValue('--mascot-y')) || 0);
+    root.style.setProperty('--drag-y', `${dragY}px`);
+    return [l, t];
+  }
+
+  function startDrag(e) {
+    dragging = true;
+    suppressClick = true;
+    walkGen++; // cancela qualquer passeio em andamento
+    clearTimeout(walkEnd);
+    clearTimeout(homeTimer);
+    setAway(true);
+    root.classList.remove('is-walking', 'is-talking');
+    root.classList.add('is-dragging');
+    const r = figure.getBoundingClientRect();
+    dockLeft =
+      document.documentElement.clientWidth - parseFloat(getComputedStyle(root).right) - root.offsetWidth;
+    grab = { x: dragStart.x - r.left, y: dragStart.y - r.top };
+    placeAt(r.left, r.top);
+    setMood('wow');
+    say(pick(PICK_LINES), 2600, false, true);
+  }
+
+  function moveDrag(e) {
+    const [l, t] = placeAt(e.clientX - grab.x, e.clientY - grab.y);
+    const now = performance.now();
+    trail.push([now, l, t]);
+    while (trail.length && trail[0][0] < now - 100) trail.shift();
+    if (trail.length > 1) {
+      const a = trail[0];
+      const b = trail[trail.length - 1];
+      const vx = (b[1] - a[1]) / Math.max(1, b[0] - a[0]);
+      root.style.setProperty('--lean', `${clamp(vx * 12, -22, 22)}deg`); // balança conforme o movimento
+      pupils.forEach((p) => (p.style.transform = `translate(${clamp(vx * 3, -2.4, 2.4)}px, 2px)`));
+    }
+    root.classList.toggle('bubble-right', l < bubble.offsetWidth + 24);
+  }
+
+  function endDrag() {
+    dragging = false;
+    setTimeout(() => (suppressClick = false), 60);
+    root.classList.remove('is-dragging');
+    root.style.setProperty('--lean', '0deg');
+    pupils.forEach((p) => (p.style.transform = ''));
+
+    // Velocidade no momento de soltar (px/ms) -> inércia do lançamento.
+    let vx = 0;
+    let vy = 0;
+    if (trail.length > 1) {
+      const a = trail[0];
+      const b = trail[trail.length - 1];
+      const dt = Math.max(16, b[0] - a[0]);
+      vx = (b[1] - a[1]) / dt;
+      vy = (b[2] - a[2]) / dt;
+    }
+    trail.length = 0;
+    const speed = Math.hypot(vx, vy);
+    const r = figure.getBoundingClientRect();
+    root.style.setProperty('--walk-dur', '.45s');
+    placeAt(r.left + (speed > 0.6 ? vx * 180 : 0), r.top + (speed > 0.6 ? vy * 180 : 0));
+    play('do-land');
+
+    clearTimeout(dragsReset);
+    drags++;
+    dragsReset = setTimeout(() => (drags = 0), 60000);
+    if (drags === 5) {
+      setMood('love', 2500);
+      say('Já vi que você gosta de me carregar!', 3600, false, true);
+    } else if (speed > 1.6) {
+      setMood('dizzy', 1800);
+      say(pick(THROW_LINES), 2600, false, true);
+    } else {
+      setMood('love', 1800);
+      say(pick(DROP_LINES), 2600, false, true);
+    }
+
+    // Depois de um tempo, volta sozinho para o cantinho.
+    homeTimer = setTimeout(() => {
+      if (dragging) return;
+      returnHome(++walkGen);
+    }, 10000 + Math.random() * 4000);
+  }
+
+  figure.addEventListener('pointerdown', (e) => {
+    if (e.button > 0) return;
+    // Evita que o navegador comece a selecionar texto / arrastar a imagem (o que cancelaria o gesto).
+    if (e.pointerType === 'mouse') e.preventDefault();
+    dragStart = { x: e.clientX, y: e.clientY, id: e.pointerId };
+    // Captura já no clique: movimentos rápidos para fora do Byte continuam chegando aqui.
+    try {
+      figure.setPointerCapture(e.pointerId);
+    } catch (err) {
+      /* ok */
+    }
+  });
+
+  figure.addEventListener('dragstart', (e) => e.preventDefault());
+
+  figure.addEventListener('pointermove', (e) => {
+    if (!dragStart || e.pointerId !== dragStart.id) return;
+    if (!dragging) {
+      if (Math.hypot(e.clientX - dragStart.x, e.clientY - dragStart.y) < 6) return; // ainda é só um clique
+      startDrag(e);
+    }
+    moveDrag(e);
+  });
+
+  ['pointerup', 'pointercancel'].forEach((ev) =>
+    figure.addEventListener(ev, () => {
+      const was = dragging;
+      dragStart = null;
+      if (was) endDrag();
+    })
+  );
 
   /* ---------- Acompanha a rolagem ---------- */
 
